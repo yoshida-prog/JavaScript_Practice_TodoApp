@@ -1,0 +1,9 @@
+.todo{
+  display: flex;
+}
+.todo > span,b{
+  display: inline-block;
+  float: left;
+  width: 20%;
+  word-break: break-all;
+}
