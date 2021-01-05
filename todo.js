@@ -3,6 +3,7 @@ let todoId = 0;
 const buttonName1 = '作業中';
 const buttonName2 = '完了';
 const buttonName3 = '削除';
+const buttonName4 = 'すべて';
 
 function addTodo(){
   let newTodo = addForm.todoComment.value;
@@ -27,6 +28,8 @@ function addTodo(){
     // ボタンを2つ作成
     const stateButton = document.createElement('button');
     stateButton.id = 'workingBtn' + todoId;
+    // ラジオボタンの処理時に使うクラス
+    stateButton.className = 'state';
     stateButton.textContent = buttonName1;
     const deleteButton = document.createElement('button');
     deleteButton.id = 'deleteBtn' + todoId;
@@ -38,6 +41,10 @@ function addTodo(){
     newDiv.appendChild(deleteButton);
     todoListDiv.appendChild(newDiv);
     todoId++;
+    // ラジオボタンの完了にチェックが入った状態であれば非表示にする
+    if(radioBox[2].checked){
+      document.getElementById(newDiv.id).style.display = 'none';
+    }
   }else{
     alert('空文字のみで入力しないでください');
   }
@@ -50,6 +57,7 @@ function changeTodo(e){
   // 作業中・完了・削除ボタンいずれかのidと合致していたら処理スタート
   let id = e.target.id;
   let btnValue = e.target.textContent;
+  console.log(id, btnValue);
   if(btnValue === buttonName1){
     changeWorkingTodo(id);
   }else if(btnValue === buttonName2){
@@ -121,4 +129,36 @@ const addButton = document.getElementById('addButton');
 addButton.addEventListener('click', addTodo, false);
 
 // クリックイベントでtodoを操作（状態変更・削除）
-window.addEventListener('click', changeTodo, false);
+document.getElementById('todoList').addEventListener('click', changeTodo, false);
+
+// ラジオボタンに応じてtodoリストの表示を切り替える
+const radioBox = document.getElementsByName('radioBox');
+radioBox.forEach(function(e){
+  e.addEventListener('click', function(){
+    let radioChecked = e.value;
+    let lastChildNum = a.length;
+    let a = document.getElementsByClassName('state');
+    // ラジオボタンの状態３種類によって表示・非表示の命令を行う
+    if(radioChecked === buttonName4){
+      for(let x=0; x<lastChildNum; x++){
+        document.getElementById(x).style.display = 'flex';
+      }
+    }else if(radioChecked === buttonName1){
+      for(let x=0; x<lastChildNum; x++){
+        if(a[x].textContent === buttonName1){
+          document.getElementById(x).style.display = 'flex';
+        }else if(a[x].textContent === buttonName2){
+          document.getElementById(x).style.display = 'none';
+        }
+      }
+    }else if (radioChecked === buttonName2){
+      for(let x=0; x<lastChildNum; x++){
+        if(a[x].textContent === buttonName2){
+          document.getElementById(x).style.display = 'flex';
+        }else if(a[x].textContent === buttonName1){
+          document.getElementById(x).style.display = 'none';
+        }
+      }
+    }
+  }, false);
+});
