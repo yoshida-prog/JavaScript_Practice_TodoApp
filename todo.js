@@ -136,8 +136,8 @@ const radioBox = document.getElementsByName('radioBox');
 radioBox.forEach(function(e){
   e.addEventListener('click', function(){
     let radioChecked = e.value;
-    let a = document.getElementsByClassName('state');
     let lastChildNum = a.length;
+    let a = document.getElementsByClassName('state');
     // ラジオボタンの状態３種類によって表示・非表示の命令を行う
     if(radioChecked === buttonName4){
       for(let x=0; x<lastChildNum; x++){
