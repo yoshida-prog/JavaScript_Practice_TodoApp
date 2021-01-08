@@ -3,6 +3,7 @@ let todoId = 0;
 const buttonName1 = '作業中';
 const buttonName2 = '完了';
 const buttonName3 = '削除';
+const buttonName4 = 'すべて';
 
 function addTodo(){
   let newTodo = addForm.todoComment.value;
@@ -27,6 +28,8 @@ function addTodo(){
     // ボタンを2つ作成
     const stateButton = document.createElement('button');
     stateButton.id = 'workingBtn' + todoId;
+    // ラジオボタンの処理時に使うクラス
+    stateButton.className = 'state';
     stateButton.textContent = buttonName1;
     const deleteButton = document.createElement('button');
     deleteButton.id = 'deleteBtn' + todoId;
@@ -38,6 +41,10 @@ function addTodo(){
     newDiv.appendChild(deleteButton);
     todoListDiv.appendChild(newDiv);
     todoId++;
+    // ラジオボタンの完了にチェックが入った状態であれば非表示にする
+    if(radioBox[2].checked){
+      document.getElementById(newDiv.id).style.display = 'none';
+    }
   }else{
     alert('空文字のみで入力しないでください');
   }
@@ -49,11 +56,20 @@ function changeTodo(e){
   // クリックした要素のidを取得
   // 作業中・完了・削除ボタンいずれかのidと合致していたら処理スタート
   let id = e.target.id;
+  let parentTodoId = e.path[1].id;
   let btnValue = e.target.textContent;
   if(btnValue === buttonName1){
     changeWorkingTodo(id);
+    // ラジオボタンが作業中なら、作業中状態ボタンを押して完了状態に変更されるとそのTodoは非表示になる
+    if(radioBox[2].className === '' && radioBox[0].className === ''){
+      document.getElementById(parentTodoId).style.display = 'none';
+    }
   }else if(btnValue === buttonName2){
     changeCompleteTodo(id);
+    // ラジオボタンが完了なら、完了状態ボタンを押して作業中状態に変更されるとそのTodoは非表示になる
+    if(radioBox[1].className === '' && radioBox[0].className === ''){
+      document.getElementById(parentTodoId).style.display = 'none';
+    }
   }else if(btnValue === buttonName3){
     deleteTodo(id);
   }
@@ -121,4 +137,48 @@ const addButton = document.getElementById('addButton');
 addButton.addEventListener('click', addTodo, false);
 
 // クリックイベントでtodoを操作（状態変更・削除）
-window.addEventListener('click', changeTodo, false);
+document.getElementById('todoList').addEventListener('click', changeTodo, false);
+
+// ラジオボタンに応じてtodoリストの表示を切り替える
+const radioBox = document.getElementsByName('radioBox');
+radioBox.forEach(function(e){
+  e.addEventListener('click', function(){
+    let radioChecked = e.value;
+    let a = document.getElementsByClassName('state');
+    let lastChildNum = a.length;
+    // ラジオボタンの状態３種類によって表示・非表示の命令を行う
+    if(radioChecked === buttonName4){
+      for(let x=0; x<lastChildNum; x++){
+        document.getElementById(x).style.display = 'flex';
+      }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = 'on';
+      radioBox[1].className = '';
+      radioBox[2].className = '';
+    }else if(radioChecked === buttonName1){
+      for(let x=0; x<lastChildNum; x++){
+        if(a[x].textContent === buttonName1){
+          document.getElementById(x).style.display = 'flex';
+        }else if(a[x].textContent === buttonName2){
+          document.getElementById(x).style.display = 'none';
+        }
+      }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = '';
+      radioBox[1].className = 'on';
+      radioBox[2].className = '';
+    }else if (radioChecked === buttonName2){
+      for(let x=0; x<lastChildNum; x++){
+        if(a[x].textContent === buttonName2){
+          document.getElementById(x).style.display = 'flex';
+        }else if(a[x].textContent === buttonName1){
+          document.getElementById(x).style.display = 'none';
+        }
+      }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = '';
+      radioBox[1].className = '';
+      radioBox[2].className = 'on';
+    }
+  }, false);
+});
