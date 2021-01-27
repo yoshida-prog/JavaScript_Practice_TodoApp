@@ -56,12 +56,20 @@ function changeTodo(e){
   // クリックした要素のidを取得
   // 作業中・完了・削除ボタンいずれかのidと合致していたら処理スタート
   let id = e.target.id;
+  let parentTodoId = e.path[1].id;
   let btnValue = e.target.textContent;
-  console.log(id, btnValue);
   if(btnValue === buttonName1){
     changeWorkingTodo(id);
+    // ラジオボタンが作業中なら、作業中状態ボタンを押して完了状態に変更されるとそのTodoは非表示になる
+    if(radioBox[2].className === '' && radioBox[0].className === ''){
+      document.getElementById(parentTodoId).style.display = 'none';
+    }
   }else if(btnValue === buttonName2){
     changeCompleteTodo(id);
+    // ラジオボタンが完了なら、完了状態ボタンを押して作業中状態に変更されるとそのTodoは非表示になる
+    if(radioBox[1].className === '' && radioBox[0].className === ''){
+      document.getElementById(parentTodoId).style.display = 'none';
+    }
   }else if(btnValue === buttonName3){
     deleteTodo(id);
   }
@@ -143,6 +151,10 @@ radioBox.forEach(function(e){
       for(let x=0; x<lastChildNum; x++){
         document.getElementById(x).style.display = 'flex';
       }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = 'on';
+      radioBox[1].className = '';
+      radioBox[2].className = '';
     }else if(radioChecked === buttonName1){
       for(let x=0; x<lastChildNum; x++){
         if(a[x].textContent === buttonName1){
@@ -151,6 +163,10 @@ radioBox.forEach(function(e){
           document.getElementById(x).style.display = 'none';
         }
       }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = '';
+      radioBox[1].className = 'on';
+      radioBox[2].className = '';
     }else if (radioChecked === buttonName2){
       for(let x=0; x<lastChildNum; x++){
         if(a[x].textContent === buttonName2){
@@ -159,6 +175,10 @@ radioBox.forEach(function(e){
           document.getElementById(x).style.display = 'none';
         }
       }
+      // どのラジオボタンにチェックが入っているかクラスで認識させる
+      radioBox[0].className = '';
+      radioBox[1].className = '';
+      radioBox[2].className = 'on';
     }
   }, false);
 });
